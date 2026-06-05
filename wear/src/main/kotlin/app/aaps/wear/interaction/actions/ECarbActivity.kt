@@ -2,8 +2,10 @@ package app.aaps.wear.interaction.actions
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.InputDeviceCompat
 import android.widget.FrameLayout
 import android.widget.ImageView
 import app.aaps.core.interfaces.rx.events.EventWearToMobile
@@ -30,6 +32,19 @@ class ECarbActivity : ViewSelectorActivity() {
     override fun onPause() {
         super.onPause()
         finish()
+    }
+
+    override fun dispatchGenericMotionEvent(ev: MotionEvent): Boolean {
+        if (ev.action == MotionEvent.ACTION_SCROLL && ev.isFromSource(InputDeviceCompat.SOURCE_ROTARY_ENCODER)) {
+            val editor = when (getCurrentPage()) {
+                0    -> editCarbs
+                1    -> editStartTime
+                2    -> editDuration
+                else -> null
+            }
+            if (editor != null) return editor.onGenericMotion(editor.editText, ev)
+        }
+        return super.dispatchGenericMotionEvent(ev)
     }
 
     private inner class MyPagerAdapter : PagerAdapter() {

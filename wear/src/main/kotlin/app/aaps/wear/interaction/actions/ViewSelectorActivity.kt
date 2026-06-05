@@ -61,6 +61,11 @@ open class ViewSelectorActivity : DaggerActivity() {
         })
     }
 
+    protected fun getCurrentPage(): Int {
+        val lm = pager?.layoutManager as? LinearLayoutManager
+        return lm?.findFirstCompletelyVisibleItemPosition()?.takeIf { it >= 0 } ?: 0
+    }
+
     fun setAdapter(adapter: PagerAdapter?) {
         pager?.adapter = adapter
         adapter?.let {
